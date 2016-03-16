@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.adawaycn"
+    android:installLocation="auto"
+    android:versionCode="6"
+
+    android:versionName="1.3.2">
+
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true"
+        android:xlargeScreens="true" />
+
+    <permission
+        android:name="org.adawaycn.permission.JPUSH_MESSAGE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="org.adawaycn.permission.JPUSH_MESSAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <application
+        android:name=".ui.AdAwayApplication"
+        android:allowBackup="false"
+        android:icon="@mipmap/icon"
+
+        android:label="@string/app_name"
+        android:theme="@style/Theme.adaway">
+        <activity
+            android:name=".ui.BaseActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.HostsSourcesActivity"
+            android:label="@string/menu_hosts_sources" />
+        <activity
+            android:name=".ui.PrefsActivity"
+            android:label="@string/menu_preferences" />
+        <activity
+            android:name=".ui.ScanAdwareActivity"
+            android:label="@string/menu_scan_adware" />
+        <activity
+            android:name=".ui.TcpdumpActivity"
+            android:label="@string/menu_tcpdump" />
+        <activity
+            android:name=".ui.TcpdumpLogActivity"
+            android:label="@string/menu_tcpdump" />
+        <activity
+            android:name=".ui.HelpActivity"
+            android:label="@string/menu_help" />
+        <!-- android:configChanges prevents activity from recreating on orientation change -->
+        <activity
+            android:name=".ui.ListsActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/menu_lists" />
+
+        <activity android:name="com.pgyersdk.activity.FeedbackActivity"/>
+
+        <service android:name=".service.UpdateService" />
+
+        <receiver android:name=".service.BootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.commonsware.cwac.wakeful.AlarmReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="com.commonsware.cwac.wakeful"
+                android:resource="@xml/wakeful" />
+        </receiver>
+        <receiver
+            android:name=".service.ConnectivityReceiver"
+            android:enabled="false">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".service.ApplyService"
+            android:exported="false" />
+        <service
+            android:name=".service.RevertService"
+            android:exported="false" />
+        <service
+            android:name=".service.BootService"
+            android:exported="false" />
+
+        <provider
+            android:name=".provider.AdAwayProvider"
+            android:authorities="org.adawaycn"
+            android:exported="false" />
+
+        <!-- Required SDK核心功能-->
+        <activity
+            android:name="cn.jpush.android.ui.PushActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:exported="false"
+            android:theme="@android:style/Theme.NoTitleBar">
+            <intent-filter>
+                <action android:name="cn.jpush.android.ui.PushActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="org.adawaycn" />
+            </intent-filter>
+        </activity>
+        <!-- Required  SDK核心功能-->
+        <service
+            android:name="cn.jpush.android.service.DownloadService"
+            android:enabled="true"
+            android:exported="false"></service>
+
+
+        <!-- Required SDK 核心功能-->
+        <!-- 可配置android:process参数将PushService放在其他进程中 -->
+        <service
+            android:name="cn.jpush.android.service.PushService"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="cn.jpush.android.intent.REGISTER" />
+                <action android:name="cn.jpush.android.intent.REPORT" />
+                <action android:name="cn.jpush.android.intent.PushService" />
+                <action android:name="cn.jpush.android.intent.PUSH_TIME" />
+            </intent-filter>
+        </service>
+
+
+        <receiver
+            android:name="cn.jpush.android.service.PushReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter android:priority="1000">
+                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" />
+                <category android:name="org.adawaycn" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name="cn.jpush.android.service.AlarmReceiver"
+            android:exported="false" />
+
+        <meta-data
+            android:name="JPUSH_CHANNEL"
+            android:value="developer-default" />
+        <meta-data
+            android:name="JPUSH_APPKEY"
+            android:value="cdf479c8ff5c06b17e23448f" />
+        <meta-data
+            android:name="PGYER_APPID"
+            android:value="bdb580ed456fdbbab0d088967b9b746f" >
+        </meta-data>
+    </application>
+
+</manifest>
